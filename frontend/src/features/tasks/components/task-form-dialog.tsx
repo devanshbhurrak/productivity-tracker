@@ -71,11 +71,12 @@ export function TaskFormDialog({ open, onClose, task }: TaskFormDialogProps) {
       <form onSubmit={onSubmit}>
         <DialogBody className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">
+            <label htmlFor="task-title" className="text-sm font-medium text-foreground">
               Title <span className="text-destructive">*</span>
             </label>
             <Input
               {...register('title')}
+              id="task-title"
               placeholder="Enter task title"
               error={!!errors.title}
               disabled={isPending}
@@ -86,9 +87,10 @@ export function TaskFormDialog({ open, onClose, task }: TaskFormDialogProps) {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground">Description</label>
+            <label htmlFor="task-description" className="text-sm font-medium text-foreground">Description</label>
             <Textarea
               {...register('description')}
+              id="task-description"
               placeholder="Add a description (optional)"
               rows={3}
               error={!!errors.description}
@@ -101,9 +103,10 @@ export function TaskFormDialog({ open, onClose, task }: TaskFormDialogProps) {
 
           {isEditing && (
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Status</label>
+              <label htmlFor="task-status" className="text-sm font-medium text-foreground">Status</label>
               <Select
                 {...register('status')}
+                id="task-status"
                 error={!!errors.status}
                 disabled={isPending}
               >

@@ -10,23 +10,30 @@ import { Button } from '@/components/ui/button';
 import { TaskStatusBadge } from '@/features/tasks/components/task-status-badge';
 import { formatDuration, formatElapsed, getTimeOfDay } from '@/utils/format';
 
+const statColorConfig = {
+  info: { bg: 'bg-info/10', text: 'text-info' },
+  primary: { bg: 'bg-primary/10', text: 'text-primary' },
+  success: { bg: 'bg-success/10', text: 'text-success' },
+} as const;
+
 function StatCard({
   label,
   value,
   icon: Icon,
-  iconColor,
+  color,
 }: {
   label: string;
   value: string | number;
   icon: React.ElementType;
-  iconColor: string;
+  color: keyof typeof statColorConfig;
 }) {
+  const { bg, text } = statColorConfig[color];
   return (
     <div className="rounded-lg border border-border bg-card p-6">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">{label}</p>
-        <div className={`rounded-full p-2 ${iconColor} bg-opacity-10`}>
-          <Icon className={`h-4 w-4 ${iconColor}`} />
+        <div className={`rounded-full p-2 ${bg}`}>
+          <Icon className={`h-4 w-4 ${text}`} />
         </div>
       </div>
       <p className="mt-2 text-2xl font-bold text-foreground">{value}</p>
@@ -59,7 +66,7 @@ function ActiveTimerCard() {
           isLoading={stopTimer.isPending}
           className="gap-2"
         >
-          <Square className="h-4 w-4" />
+          {!stopTimer.isPending && <Square className="h-4 w-4" />}
           Stop Timer
         </Button>
       </div>
@@ -105,19 +112,19 @@ export function DashboardPage() {
               label="Tasks Worked On"
               value={dashboard.tasks_worked_on?.length ?? 0}
               icon={ListTodo}
-              iconColor="text-info"
+              color="info"
             />
             <StatCard
               label="Total Time Tracked"
               value={formatDuration(dashboard.total_tracked_seconds)}
               icon={Clock}
-              iconColor="text-primary"
+              color="primary"
             />
             <StatCard
               label="Completed Today"
               value={dashboard.completed_count}
               icon={CheckCircle2}
-              iconColor="text-success"
+              color="success"
             />
           </div>
 

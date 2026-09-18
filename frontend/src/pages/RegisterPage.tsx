@@ -53,9 +53,10 @@ export function RegisterPage() {
         <div className="bg-card rounded-lg border border-border p-8 shadow-sm">
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Name</label>
+              <label htmlFor="name" className="text-sm font-medium text-foreground">Name</label>
               <Input
                 {...register('name')}
+                id="name"
                 type="text"
                 placeholder="Your full name"
                 autoComplete="name"
@@ -67,9 +68,10 @@ export function RegisterPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Email</label>
+              <label htmlFor="email" className="text-sm font-medium text-foreground">Email</label>
               <Input
                 {...register('email')}
+                id="email"
                 type="email"
                 placeholder="you@example.com"
                 autoComplete="email"
@@ -81,9 +83,10 @@ export function RegisterPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Password</label>
+              <label htmlFor="password" className="text-sm font-medium text-foreground">Password</label>
               <Input
                 {...register('password')}
+                id="password"
                 type="password"
                 placeholder="Min. 8 characters"
                 autoComplete="new-password"
@@ -95,9 +98,10 @@ export function RegisterPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">Confirm Password</label>
               <Input
                 {...register('confirmPassword')}
+                id="confirmPassword"
                 type="password"
                 placeholder="Re-enter your password"
                 autoComplete="new-password"

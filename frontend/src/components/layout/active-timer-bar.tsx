@@ -47,7 +47,7 @@ export function ActiveTimerBar() {
           onClick={handleStop}
           isLoading={stopTimer.isPending}
         >
-          <Square className="h-3 w-3" />
+          {!stopTimer.isPending && <Square className="h-3 w-3" />}
           Stop
         </Button>
       </div>

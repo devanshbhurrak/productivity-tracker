@@ -38,9 +38,10 @@ export function LoginPage() {
         <div className="bg-card rounded-lg border border-border p-8 shadow-sm">
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Email</label>
+              <label htmlFor="email" className="text-sm font-medium text-foreground">Email</label>
               <Input
                 {...register('email')}
+                id="email"
                 type="email"
                 placeholder="you@example.com"
                 autoComplete="email"
@@ -52,9 +53,10 @@ export function LoginPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Password</label>
+              <label htmlFor="password" className="text-sm font-medium text-foreground">Password</label>
               <Input
                 {...register('password')}
+                id="password"
                 type="password"
                 placeholder="••••••••"
                 autoComplete="current-password"

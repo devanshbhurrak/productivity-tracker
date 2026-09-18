@@ -11,6 +11,7 @@ import {
   Timer,
   ChevronUp,
   ChevronDown,
+  ListTodo,
 } from 'lucide-react';
 import { useTasks } from '@/features/tasks/hooks';
 import { useActiveTimer, useStartTimer, useStopTimer } from '@/features/timer/hooks';
@@ -234,6 +235,7 @@ export function TasksPage() {
         />
       ) : !data || data.items.length === 0 ? (
         <EmptyState
+          icon={ListTodo}
           heading={search || status ? 'No tasks match your filters' : 'No tasks yet'}
           description={
             search || status
@@ -285,13 +287,14 @@ export function TasksPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 sm:gap-0 sm:block">
-                    <TaskStatusBadge status={task.status} />
-                  </div>
-
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Timer className="h-3 w-3" />
-                    {formatDuration(task.total_tracked_seconds)}
+                  <div className="flex items-center gap-3 sm:contents">
+                    <div>
+                      <TaskStatusBadge status={task.status} />
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Timer className="h-3 w-3" />
+                      {formatDuration(task.total_tracked_seconds)}
+                    </div>
                   </div>
 
                   <div>
@@ -306,16 +309,21 @@ export function TasksPage() {
                       disabled={
                         !isRunning && !!activeTimer && !isThisTimer
                       }
+                      title={!isRunning && !!activeTimer && !isThisTimer ? 'Stop the active timer first' : undefined}
                       className="h-8 gap-1.5"
                     >
                       {isRunning ? (
                         <>
-                          <Square className="h-3 w-3" />
+                          {!(stopTimer.isPending && stopTimer.variables === task.active_time_session_id) && (
+                            <Square className="h-3 w-3" />
+                          )}
                           Stop
                         </>
                       ) : (
                         <>
-                          <Play className="h-3 w-3" />
+                          {!(startTimer.isPending && startTimer.variables === task.id) && (
+                            <Play className="h-3 w-3" />
+                          )}
                           Start
                         </>
                       )}

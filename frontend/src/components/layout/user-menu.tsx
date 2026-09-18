@@ -1,6 +1,5 @@
 import { LogOut, User } from 'lucide-react';
-import { useCurrentUser } from '@/features/auth/hooks';
-import { useLogout } from '@/features/auth/hooks';
+import { useCurrentUser, useLogout } from '@/features/auth/hooks';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 export function UserMenu() {
