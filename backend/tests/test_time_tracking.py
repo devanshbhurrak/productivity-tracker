@@ -39,18 +39,20 @@ def test_active_timer_retrieval(client, user_factory):
     alice = user_factory()
     r = client.post("/api/v1/tasks", json={"title": "Active Task"}, headers=alice["headers"])
     tid = r.json()["id"]
-    # No active initially
+    # No active initially -> 200 null
     r = client.get("/api/v1/time-sessions/active", headers=alice["headers"])
-    assert r.status_code == 404
+    assert r.status_code == 200
+    assert r.json() is None
     r = client.post("/api/v1/time-sessions/start", json={"task_id": tid}, headers=alice["headers"])
     sid = r.json()["id"]
     r = client.get("/api/v1/time-sessions/active", headers=alice["headers"])
     assert r.status_code == 200
     assert r.json()["id"] == sid
-    # After stop, no active
+    # After stop, no active -> 200 null
     client.post(f"/api/v1/time-sessions/{sid}/stop", headers=alice["headers"])
     r = client.get("/api/v1/time-sessions/active", headers=alice["headers"])
-    assert r.status_code == 404
+    assert r.status_code == 200
+    assert r.json() is None
 
 
 def test_duplicate_start(client, user_factory):

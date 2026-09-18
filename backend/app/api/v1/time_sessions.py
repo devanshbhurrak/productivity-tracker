@@ -9,7 +9,6 @@ from app.models.user import User
 from app.schemas.time_session import StartTimerRequest, TimeSessionResponse
 from app.services.time_session_service import TimeSessionService
 from app.utils.pagination import build_pagination_meta
-from app.exceptions.base import NotFoundException
 
 router = APIRouter(prefix="/time-sessions", tags=["time-sessions"])
 
@@ -36,15 +35,14 @@ def stop_timer(
     return sess
 
 
-@router.get("/active", response_model=TimeSessionResponse)
+@router.get("/active", response_model=Optional[TimeSessionResponse])
 def get_active_timer(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     service = TimeSessionService(db)
     active = service.get_active(user_id=current_user.id)
-    if not active:
-        raise NotFoundException(code="NO_ACTIVE_TIMER", message="No active timer")
+    # Return 200 with null when no active timer (avoids noisy 404 on polling)
     return active
 
 

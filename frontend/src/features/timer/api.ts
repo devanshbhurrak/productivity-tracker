@@ -2,7 +2,7 @@ import { apiClient } from '@/lib/api-client';
 import { TimeSession } from '@/types';
 
 export async function getActiveTimer(): Promise<TimeSession | null> {
-  return apiClient.get<TimeSession>('/time-sessions/active');
+  return apiClient.get<TimeSession | null>('/time-sessions/active');
 }
 
 export async function startTimer(taskId: string): Promise<TimeSession> {
