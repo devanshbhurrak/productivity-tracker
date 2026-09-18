@@ -26,12 +26,13 @@ def login(payload: LoginRequest, response: Response, db: Session = Depends(get_d
     service = AuthService(db)
     user, token = service.login(email=payload.email, password=payload.password)
     # Set HttpOnly cookie
+    is_cross_origin = settings.cookie_secure and not settings.is_testing
     response.set_cookie(
         key=settings.cookie_name,
         value=token,
         httponly=True,
         secure=settings.cookie_secure if not settings.is_testing else False,
-        samesite="lax",
+        samesite="none" if is_cross_origin else "lax",
         max_age=settings.access_token_expire_minutes * 60,
         path="/",
     )
@@ -54,7 +55,13 @@ def logout(request: Request, response: Response, current_user: User = Depends(ge
     # Also check via bearer_scheme fallback: try to get from request
     if token:
         revoke_token(token)
-    response.delete_cookie(key=settings_local.cookie_name, path="/")
+    is_cross_origin = settings_local.cookie_secure and not settings_local.is_testing
+    response.delete_cookie(
+        key=settings_local.cookie_name,
+        path="/",
+        samesite="none" if is_cross_origin else "lax",
+        secure=settings_local.cookie_secure,
+    )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 

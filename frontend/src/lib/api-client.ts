@@ -1,5 +1,19 @@
 const BASE_URL = `${(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')}/api/v1`;
 
+const TOKEN_KEY = 'auth_token';
+
+export function setAuthToken(token: string) {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+export function clearAuthToken() {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+function getAuthToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
 export class ApiError extends Error {
   status: number;
   detail: string | undefined;
@@ -24,6 +38,11 @@ async function request<T>(
     headers['Content-Type'] = 'application/json';
   }
 
+  const token = getAuthToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(url, {
     method,
     headers,
@@ -32,6 +51,7 @@ async function request<T>(
   });
 
   if (response.status === 401) {
+    clearAuthToken();
     window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     throw new ApiError(401, 'Unauthorized');
   }

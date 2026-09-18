@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { ApiError } from '@/lib/api-client';
+import { ApiError, setAuthToken, clearAuthToken } from '@/lib/api-client';
 import { login, register, logout, getCurrentUser } from './api';
 import { LoginRequest, RegisterRequest } from './types';
 
@@ -25,7 +25,8 @@ export function useLogin() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: LoginRequest) => login(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setAuthToken(data.access_token);
       queryClient.invalidateQueries({ queryKey: ['auth', 'currentUser'] });
     },
   });
@@ -43,10 +44,12 @@ export function useLogout() {
   return useMutation({
     mutationFn: () => logout(),
     onSuccess: () => {
+      clearAuthToken();
       queryClient.clear();
       navigate('/login');
     },
     onError: () => {
+      clearAuthToken();
       queryClient.clear();
       navigate('/login');
     },
