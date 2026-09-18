@@ -62,21 +62,16 @@ def root():
 # For dev and testing, ensure tables exist
 @app.on_event("startup")
 def on_startup():
-    # Only auto-create for sqlite or testing; in production rely on alembic
     db_url = settings.get_database_url()
-    if db_url.startswith("sqlite") or settings.is_testing:
-        try:
-            create_all_tables()
-        except Exception as e:
-            _startup_logger.warning("create_all_tables failed (tables may already exist): %s", e)
-        # Create partial unique index for SQLite if needed via raw SQL for active timer enforcement?
-        # SQLite does not support partial indexes via SQLAlchemy create_all, we create manually
+    try:
+        create_all_tables()
+    except Exception as e:
+        _startup_logger.warning("create_all_tables failed (tables may already exist): %s", e)
+    if db_url.startswith("sqlite"):
         try:
             from sqlalchemy import text
             with engine.connect() as conn:
-                # Create unique index for one active per user where ended_at IS NULL
-                # SQLite supports WHERE clause in CREATE UNIQUE INDEX since 3.8.0
                 conn.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS ix_time_sessions_one_active_per_user ON time_sessions (user_id) WHERE ended_at IS NULL"))
                 conn.commit()
         except Exception as e:
-            _startup_logger.warning("Could not create partial unique index (may already exist or DB unsupported): %s", e)
+            _startup_logger.warning("Could not create partial unique index: %s", e)
