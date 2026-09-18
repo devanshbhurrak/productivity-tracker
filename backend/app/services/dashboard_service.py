@@ -42,17 +42,32 @@ class DashboardService:
         for sess in overlapping_sessions:
             # Determine effective end: if active, use now
             sess_end = sess.ended_at if sess.ended_at else now_utc
-            # Only count if sess is overlapping
             overlap = calculate_overlap_seconds(sess.started_at, sess_end, day_start_utc, day_end_utc)
             if overlap > 0:
                 total_seconds_today += overlap
                 worked_task_ids.add(sess.task_id)
 
+        # Fetch and enrich the tasks worked on today
+        tasks_worked_on = []
+        if worked_task_ids:
+            from app.models.task import Task
+            tasks = self.db.query(Task).filter(
+                Task.id.in_(list(worked_task_ids)),
+                Task.user_id == user_id,
+            ).all()
+            enriched = self.task_repo.bulk_total_tracked(list(worked_task_ids), user_id)
+            actives = self.task_repo.bulk_active_sessions(list(worked_task_ids), user_id)
+            for t in tasks:
+                tasks_worked_on.append({
+                    "task": t,
+                    "total_tracked_seconds": enriched.get(t.id, 0),
+                    "active_time_session_id": actives.get(t.id),
+                })
+
         return {
             "date": today_local,
             "timezone": user_timezone,
-            "tasks_worked_on": len(worked_task_ids),
-            "tasks_worked_on_ids": list(worked_task_ids),
+            "tasks_worked_on": tasks_worked_on,
             "total_tracked_seconds": total_seconds_today,
             "completed_count": completed,
             "in_progress_count": in_progress,

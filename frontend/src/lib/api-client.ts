@@ -51,12 +51,17 @@ async function request<T>(
   }
 
   if (!response.ok) {
-    const errorData = data as { detail?: string; message?: string };
+    const errorData = data as {
+      detail?: string;
+      message?: string;
+      error?: { code?: string; message?: string };
+    };
     const message =
-      errorData?.detail ||
+      errorData?.error?.message ||
+      (typeof errorData?.detail === 'string' ? errorData.detail : undefined) ||
       errorData?.message ||
       `HTTP error ${response.status}`;
-    throw new ApiError(response.status, message, errorData?.detail);
+    throw new ApiError(response.status, message, errorData?.error?.code);
   }
 
   return data as T;

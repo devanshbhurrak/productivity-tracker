@@ -147,11 +147,11 @@ def test_pagination(client, user_factory):
     assert data["pagination"]["total"] == 5
     assert data["pagination"]["total_pages"] == 3
     assert data["pagination"]["has_next"] is True
-    assert data["pagination"]["has_previous"] is False
+    assert data["pagination"]["has_prev"] is False
     r = client.get("/api/v1/tasks", params={"page": 3, "page_size": 2}, headers=alice["headers"])
     assert len(r.json()["items"]) == 1
     assert r.json()["pagination"]["has_next"] is False
-    assert r.json()["pagination"]["has_previous"] is True
+    assert r.json()["pagination"]["has_prev"] is True
 
 
 def test_task_validation(client, user_factory):

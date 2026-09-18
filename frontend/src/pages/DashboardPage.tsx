@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Clock, CheckCircle2, ListTodo, Timer, ArrowRight, Square } from 'lucide-react';
 import { useCurrentUser } from '@/features/auth/hooks';
 import { useTodayDashboard } from '@/features/dashboard/hooks';
@@ -68,6 +68,7 @@ function ActiveTimerCard() {
 }
 
 export function DashboardPage() {
+  const navigate = useNavigate();
   const { data: user } = useCurrentUser();
   const { data: dashboard, isLoading, error, refetch } = useTodayDashboard();
   const timeOfDay = getTimeOfDay();
@@ -161,9 +162,7 @@ export function DashboardPage() {
                 heading="No activity yet today"
                 description="Start working on tasks to track your progress here."
                 actionLabel="Go to Tasks"
-                onAction={() => {
-                  window.location.href = '/app/tasks';
-                }}
+                onAction={() => navigate('/app/tasks')}
               />
             )}
           </div>

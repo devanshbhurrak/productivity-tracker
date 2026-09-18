@@ -4,10 +4,12 @@ export function formatDuration(seconds: number): string {
   if (seconds <= 0) return '0m';
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
   if (hours > 0) {
     return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
   }
-  return `${minutes}m`;
+  if (minutes > 0) return `${minutes}m`;
+  return `${secs}s`;
 }
 
 export function formatElapsed(seconds: number): string {

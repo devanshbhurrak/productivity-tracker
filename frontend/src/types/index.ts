@@ -4,6 +4,7 @@ export interface User {
   email: string;
   timezone: string;
   created_at: string;
+  updated_at: string;
 }
 
 export type TaskStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
@@ -47,7 +48,7 @@ export interface PaginatedResponse<T> {
 
 export interface TaskTimeSummary {
   task_id: string;
-  total_sessions: number;
+  session_count: number;
   total_tracked_seconds: number;
 }
 

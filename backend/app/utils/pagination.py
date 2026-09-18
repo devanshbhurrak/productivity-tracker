@@ -22,5 +22,5 @@ def build_pagination_meta(page: int, page_size: int, total: int) -> dict:
         "total": total,
         "total_pages": total_pages,
         "has_next": page < total_pages,
-        "has_previous": page > 1,
+        "has_prev": page > 1,
     }

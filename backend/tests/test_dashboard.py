@@ -10,7 +10,7 @@ def test_no_activity(client, user_factory):
     assert r.status_code == 200
     data = r.json()
     assert data["total_tracked_seconds"] == 0
-    assert data["tasks_worked_on"] == 0
+    assert data["tasks_worked_on"] == []
     assert data["completed_count"] == 0
     assert data["in_progress_count"] == 0
     assert data["pending_count"] == 0 or data["pending_count"] >= 0
@@ -27,8 +27,9 @@ def test_tasks_worked_on_today(client, user_factory):
     client.post(f"/api/v1/time-sessions/{sid}/stop", headers=alice["headers"])
     r = client.get("/api/v1/dashboard/today", headers=alice["headers"])
     assert r.status_code == 200
-    assert r.json()["tasks_worked_on"] == 1
-    assert tid in r.json()["tasks_worked_on_ids"]
+    tasks_worked_on = r.json()["tasks_worked_on"]
+    assert len(tasks_worked_on) == 1
+    assert any(t["id"] == tid for t in tasks_worked_on)
 
 
 def test_daily_tracked_time(client, user_factory):
@@ -120,7 +121,7 @@ def test_session_crossing_midnight(client, user_factory, db_session):
     # Our session contributes 1200 to today, 600 to yesterday
     # Since we only query today, it should be at least 1200
     assert data["total_tracked_seconds"] >= 1200
-    assert data["tasks_worked_on"] >= 1
+    assert len(data["tasks_worked_on"]) >= 1
 
     # Also ensure raw session remains one (not split)
     from sqlalchemy import func

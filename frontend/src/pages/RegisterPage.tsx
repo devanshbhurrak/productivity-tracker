@@ -21,10 +21,13 @@ export function RegisterPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
+      const timezone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
       await registerMutation.mutateAsync({
         name: values.name,
         email: values.email,
         password: values.password,
+        timezone,
       });
       // Auto-login after registration
       await loginMutation.mutateAsync({

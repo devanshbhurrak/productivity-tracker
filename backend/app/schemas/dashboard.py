@@ -3,13 +3,13 @@ from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
 import uuid
 from app.schemas.time_session import TimeSessionResponse
+from app.schemas.task import TaskResponse
 
 
 class DashboardTodayResponse(BaseModel):
     date: date
     timezone: str
-    tasks_worked_on: int
-    tasks_worked_on_ids: List[uuid.UUID]
+    tasks_worked_on: List[TaskResponse]
     total_tracked_seconds: int
     completed_count: int
     in_progress_count: int
