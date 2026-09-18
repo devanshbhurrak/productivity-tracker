@@ -246,7 +246,7 @@ export function TasksPage() {
           onAction={!search && !status ? () => setFormDialogOpen(true) : undefined}
         />
       ) : (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <div className="rounded-lg border border-border bg-card">
           {/* Table header */}
           <div className="hidden sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] sm:gap-4 px-4 py-2 bg-muted/40 border-b border-border text-xs text-muted-foreground font-medium">
             <SortButton
